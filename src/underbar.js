@@ -206,19 +206,19 @@
     // TIP: Try re-using reduce() here.
       return _.reduce(collection, function(everyTrue, elem) {
         if(iterator === undefined) { return elem; }
-            if(!iterator(elem)) {
-                return false;
-            } else {
-                return everyTrue;
-            }
-          }, true);
-
+        if(!iterator(elem)) { return false; }
+        return everyTrue;
+      }, true);
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+        return !_.every(collection, function(elem) {
+            if(iterator === undefined) { return !elem; }
+            return !iterator(elem);
+        });
   };
 
 
