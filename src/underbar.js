@@ -190,6 +190,8 @@
   _.contains = function(collection, target) {
     // TIP: Many iteration problems can be most easily expressed in
     // terms of reduce(). Here's a freebie to demonstrate!
+ 
+ // IS THIS RECURSIVE? -ssc
     return _.reduce(collection, function(wasFound, item) {
       if (wasFound) {
         return true;
@@ -202,6 +204,15 @@
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
+      return _.reduce(collection, function(everyTrue, elem) {
+        if(iterator === undefined) { return elem; }
+            if(!iterator(elem)) {
+                return false;
+            } else {
+                return everyTrue;
+            }
+          }, true);
+
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
