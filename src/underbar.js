@@ -241,11 +241,27 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+ _.each(arguments, function(argObj) {
+        // When _.each is called on an obj, there are 3 args: value, key, list
+        _.each(argObj, function(value, key) {
+               obj[key] = value;
+               });
+        });
+ return obj;
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+ //var args = Array.prototype.slice.call(arguments);
+ _.each(arguments, function(argObj) {
+        _.each(argObj, function(value, key) {
+            if(!(key in obj)) {
+               obj[key] = value;
+            }
+          });
+        });
+ return obj;
   };
 
 
@@ -289,7 +305,17 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
-  };
+  var stored = {};
+  return function() {
+      var currArgs = JSON.stringify(arguments);
+      if (!(currArgs in stored)) {
+          stored[currArgs] = func.apply(this, arguments);
+      }
+      return stored[currArgs];
+   };
+ };
+ 
+
 
   // Delays a function for the given number of milliseconds, and then calls
   // it with the arguments supplied.
@@ -298,6 +324,10 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+       var args = Array.prototype.slice.call(arguments).slice(2);
+       setTimeout(function() {
+            func.apply(this, args);
+        }, wait);
   };
 
 
@@ -312,7 +342,24 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
-  };
+    var tempArr = Array.prototype.slice.call(array);
+    var shuffled = [];
+
+    for (var i = 0; i < array.length; i++) {
+        var random = Math.floor(Math.random() * tempArr.length);
+            shuffled.push(tempArr[random]);
+            tempArr.splice(random, 1);
+        }
+    return shuffled;
+   };
+ 
+// function getRandomInt(min, max) {
+// min = Math.ceil(min);
+// max = Math.floor(max);
+// return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+// }
+ 
+
 
 
   /**
