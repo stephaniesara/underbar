@@ -113,13 +113,17 @@
 
   // Produce a duplicate-free version of the array.
   _.uniq = function(array, isSorted, iterator) {
- var uniq = [];
- _.each(array, function(elem) {
-        if (!uniq.includes(elem)) {
-        uniq.push(elem);
-        }
-        });
- return uniq;
+
+       var uniq = {};
+       _.each(array, function(elem) {
+              var key = iterator != null ? iterator(elem) : elem;
+              if (!(key in uniq)) {
+                  uniq[key]  = elem;
+              }
+       });
+       return _.map(Object.keys(uniq), function(key) {
+              return uniq[key];
+       });
   };
 
 
