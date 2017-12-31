@@ -208,21 +208,36 @@
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
+    iterator = iterator || _.identity;
     return _.reduce(collection, function(everyTrue, elem) {
-      if(iterator === undefined) { return elem; }
-      if(!iterator(elem)) { return false; }
-      return everyTrue;
+      return !!iterator(elem) && everyTrue;
     }, true);
+
+    // if(iterator === undefined) {
+    //   return elem;
+    // } else {
+    //   return !!iterator(elem) && everyTrue;
+    // }
+    // if(!iterator(elem)) {
+    //   return false;
+    // }
+    // return everyTrue;
   };
+
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    iterator = iterator || _.identity;
     return !_.every(collection, function(elem) {
-      if(iterator === undefined) { return !elem; }
       return !iterator(elem);
     });
+
+    // return !_.every(collection, function(elem) {
+    //   if(iterator === undefined) { return !elem; }
+    //   return !iterator(elem);
+    // });
   };
 
 
@@ -245,6 +260,7 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    // Here, arguments is an array-like structure containing the obj arguments
     _.each(arguments, function(argObj) {
       // When _.each is called on an obj, there are 3 args: value, key, list
       _.each(argObj, function(value, key) {
@@ -260,6 +276,7 @@
     //var args = Array.prototype.slice.call(arguments);
     _.each(arguments, function(argObj) {
       _.each(argObj, function(value, key) {
+        // Ensures that existing key-value pairs in obj are not overwritten
         if(!(key in obj)) {
           obj[key] = value;
         }
@@ -309,14 +326,14 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
-    var stored = {};
+    var results = {};
     return function() {
       var currArgs = JSON.stringify(arguments);
-      if (!(currArgs in stored)) {
-        stored[currArgs] = func.apply(this, arguments);
+      if (!(currArgs in results)) {
+        results[currArgs] = func.apply(this, arguments);
       }
-      return stored[currArgs];
-    };
+      return results[currArgs];
+    }
   };
 
 
@@ -328,6 +345,7 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+    // Converts arguments into an array, then cuts out the first two args
     var args = Array.prototype.slice.call(arguments).slice(2);
     setTimeout(function() {
       func.apply(this, args);
